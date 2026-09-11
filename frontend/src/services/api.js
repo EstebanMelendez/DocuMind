@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -18,7 +18,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       // Dispatch a custom event to notify the app to logout
       window.dispatchEvent(new Event('auth-error'));
     }
@@ -37,6 +37,7 @@ export const documentAPI = {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
   delete: (id) => api.delete(`/documents/${id}`),
+  download: (id) => api.get(`/documents/${id}/download`, { responseType: 'blob' }),
 };
 
 export const folderAPI = {
@@ -50,7 +51,7 @@ export const dashboardAPI = {
 };
 
 export const ragAPI = {
-  query: (queryStr) => api.post('/rag/query', { query: queryStr }),
+  query: (queryStr, docIds = []) => api.post('/rag/query', { query: queryStr, document_ids: docIds }),
 };
 
 export default api;

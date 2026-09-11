@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { ragAPI } from '../services/api';
 
-export default function Assistant() {
+export default function Assistant({ documents = [] }) {
   const [query, setQuery] = useState('');
   const [chatLog, setChatLog] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedDocs, setSelectedDocs] = useState([]);
+
+  const toggleDocSelection = (id) => {
+    if (selectedDocs.includes(id)) {
+      setSelectedDocs(selectedDocs.filter(d => d !== id));
+    } else {
+      setSelectedDocs([...selectedDocs, id]);
+    }
+  };
 
   const handleChatSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +23,7 @@ export default function Assistant() {
     setQuery('');
     setLoading(true);
     try {
-      const res = await ragAPI.query(query);
+      const res = await ragAPI.query(query, selectedDocs);
       setChatLog([...newLog, { role: 'ai', text: res.data.answer, sources: res.data.sources }]);
     } catch (error) {
       setChatLog([...newLog, { role: 'ai', text: "Error al consultar la base de datos documental." }]);
@@ -27,6 +36,30 @@ export default function Assistant() {
     <div className="flex flex-col h-[calc(100vh-100px)] max-h-[800px] bg-white rounded-lg shadow">
       <div className="p-4 border-b bg-slate-50 rounded-t-lg">
         <h2 className="text-xl font-bold">Consultas Semánticas (RAG)</h2>
+        <div className="mt-4">
+          <p className="text-sm font-medium text-slate-700 mb-2">Filtro de documentos (Dejar vacío para buscar en todos):</p>
+          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+            {documents.length === 0 ? (
+              <span className="text-sm text-slate-500 italic">No hay documentos disponibles.</span>
+            ) : (
+              documents.map(doc => (
+                <button
+                  key={doc.id}
+                  onClick={() => toggleDocSelection(doc.id)}
+                  type="button"
+                  className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                    selectedDocs.includes(doc.id) 
+                      ? 'bg-blue-100 border-blue-400 text-blue-800 font-semibold' 
+                      : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+                  }`}
+                  title={doc.filename}
+                >
+                  {doc.filename.length > 25 ? doc.filename.substring(0, 25) + '...' : doc.filename}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
       </div>
       <div className="flex-1 p-6 overflow-y-auto space-y-4">
         {chatLog.length === 0 ? (

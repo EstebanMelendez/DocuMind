@@ -8,7 +8,7 @@ import { documentAPI, folderAPI, dashboardAPI } from './services/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [token, setToken] = useState(sessionStorage.getItem('token') || null);
   
   // Data States
   const [documents, setDocuments] = useState([]);
@@ -25,10 +25,10 @@ export default function App() {
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       fetchData();
     } else {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
     }
   }, [token]);
 
@@ -65,7 +65,7 @@ export default function App() {
       <main className="flex-1 p-8 overflow-y-auto">
         {activeTab === 'dashboard' && <Dashboard stats={stats} />}
         {activeTab === 'repository' && <Repository folders={folders} documents={documents} fetchData={fetchData} />}
-        {activeTab === 'chat' && <Assistant />}
+        {activeTab === 'chat' && <Assistant documents={documents} />}
       </main>
     </div>
   );

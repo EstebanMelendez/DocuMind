@@ -1,8 +1,7 @@
 import { ArrowLeft, Download } from 'lucide-react';
-import api from '../services/api'; // using default export to get API_URL logic or just VITE_API_URL
+import { documentAPI } from '../services/api';
 
 export default function DocumentViewer({ doc, onClose }) {
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
   return (
     <div className="flex flex-col h-full animate-in fade-in duration-300">
@@ -37,10 +36,27 @@ export default function DocumentViewer({ doc, onClose }) {
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-bold mb-6 text-slate-800 border-b pb-2">Acciones</h3>
-            <a href={`${API_URL}/documents/${doc.id}/download`} download target="_blank" rel="noopener noreferrer" className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 flex items-center justify-center transition-colors font-medium">
+            <button 
+              onClick={async () => {
+                try {
+                  const response = await documentAPI.download(doc.id);
+                  const url = window.URL.createObjectURL(new Blob([response.data]));
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.setAttribute('download', doc.filename);
+                  document.body.appendChild(link);
+                  link.click();
+                  link.parentNode.removeChild(link);
+                } catch (error) {
+                  console.error("Error al descargar:", error);
+                  alert("Error al descargar el archivo.");
+                }
+              }}
+              className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 flex items-center justify-center transition-colors font-medium cursor-pointer"
+            >
               <Download className="w-5 h-5 mr-2" />
               Descargar Archivo Original
-            </a>
+            </button>
           </div>
         </div>
       </div>

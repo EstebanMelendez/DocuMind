@@ -316,6 +316,7 @@ def download_document(doc_id: int, db: Session = Depends(get_db), current_user: 
 
 class RagQueryRequest(BaseModel):
     query: str
+    document_ids: Optional[list[int]] = []
 
 @app.post("/api/rag/query")
 def rag_query(payload: RagQueryRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -324,8 +325,14 @@ def rag_query(payload: RagQueryRequest, db: Session = Depends(get_db), current_u
     
     dist_expr = DocumentChunk.embedding.cosine_distance(q_emb)
     # Threshold de distancia opcional para evitar ruido: dist_expr < 0.3
-    results = db.query(DocumentChunk.chunk_text, Document.filename, dist_expr.label("dist")) \
-                .join(Document).filter(dist_expr < 0.4).order_by(dist_expr).limit(3).all()
+    
+    base_query = db.query(DocumentChunk.chunk_text, Document.filename, dist_expr.label("dist")) \
+                .join(Document).filter(dist_expr < 0.4)
+                
+    if payload.document_ids:
+        base_query = base_query.filter(Document.id.in_(payload.document_ids))
+        
+    results = base_query.order_by(dist_expr).limit(3).all()
                 
     if not results:
         return {"answer": "No encontré información relevante en los documentos para responder a tu pregunta.", "sources": []}
