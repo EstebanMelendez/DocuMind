@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super_secreta_llave_de_seguridad_documind_32_bytes")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super_secreta_llave_de_seguridad_indicio_32_bytes")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 2
 

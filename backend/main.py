@@ -26,7 +26,7 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 MODEL_TEXT = os.getenv("GEMINI_TEXT_MODEL", "gemini-2.0-flash")
 MODEL_EMB = os.getenv("GEMINI_EMBEDDING_MODEL", "models/text-embedding-005")
 
-app = FastAPI(title="DocuMind Enterprise")
+app = FastAPI(title="Indicio Enterprise")
 
 app.add_middleware(
     CORSMiddleware,

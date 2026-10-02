@@ -14,7 +14,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout }) {
 
   return (
     <aside className="w-64 bg-slate-900 text-white p-6 flex flex-col">
-      <h1 className="text-2xl font-bold mb-2">DocuMind</h1>
+      <h1 className="text-2xl font-bold mb-2">Indicio</h1>
       <p className="text-xs text-slate-400 mb-8">Enterprise Edition</p>
       <nav className="flex-1 space-y-2">
         <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center p-3 rounded ${activeTab === 'dashboard' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>

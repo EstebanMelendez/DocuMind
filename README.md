@@ -1,6 +1,6 @@
-# DocuMind Enterprise
+# Indicio Enterprise
 
-DocuMind Enterprise es una plataforma de gestión documental inteligente. Este repositorio contiene el código fuente completo, incluyendo el frontend, el backend y toda la documentación del ciclo de vida del desarrollo.
+Indicio Enterprise es una plataforma de gestión documental inteligente. Este repositorio contiene el código fuente completo, incluyendo el frontend, el backend y toda la documentación del ciclo de vida del desarrollo.
 
 ## 📂 Estructura del Proyecto
 
@@ -26,7 +26,7 @@ El proyecto utiliza PostgreSQL. Puedes levantar la base de datos rápidamente us
 ```bash
 docker-compose up -d
 ```
-Esto creará un contenedor llamado `documind_db` exponiendo el puerto `5432`.
+Esto creará un contenedor llamado `indicio_db` exponiendo el puerto `5432`.
 
 ### 2. Configurar y Levantar el Backend
 Abre una terminal y navega a la carpeta del backend:
@@ -55,9 +55,15 @@ Para acceder al sistema por primera vez, necesitas crear el usuario inicial. Eje
 ```bash
 python create_admin.py
 ```
-*Este script conectará con la base de datos y generará (o actualizará) el usuario con las siguientes credenciales:*
-- **Email:** `admin@documind.com`
+*Este script conectará con la base de datos y generará (o actualizará) los usuarios con las siguientes credenciales:*
+
+**Administrador:**
+- **Email:** `indicio.admin@gmail.com`
 - **Contraseña:** `admin123`
+
+**Auditor:**
+- **Email:** `indicio.auditor@gmail.com`
+- **Contraseña:** `auditor123`
 
 Finalmente, inicia el servidor de desarrollo:
 ```bash
