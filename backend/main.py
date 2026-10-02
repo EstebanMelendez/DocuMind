@@ -14,6 +14,7 @@ from sqlalchemy import func
 from app.database import get_db, engine, Base
 from app.models import Document, DocumentChunk, Folder, User, BlacklistedToken
 from app.auth import get_current_user, create_access_token, verify_password, oauth2_scheme
+from app.notifications import notify_document_status
 import google.generativeai as genai
 import pdfplumber
 import docx
@@ -203,6 +204,8 @@ def process_document_background(doc_id: int, file_path: str, filename: str):
     
     finally:
         db.commit()
+        if doc and doc.status in ["Procesado", "Error"]:
+            notify_document_status(doc)
         db.close()
 
 
